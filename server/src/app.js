@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true })); // Parsear datos de formularios
 
 // Ruta principal
 app.get('/', (req, res) => {
-  res.send('Backend de estacionamiento funcionando correctamente');
+  res.json({ mensaje: 'Backend de estacionamiento funcionando correctamente' });
 });
 
 // Middleware de manejo de errores
