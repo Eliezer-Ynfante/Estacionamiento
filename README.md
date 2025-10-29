@@ -2,8 +2,8 @@
 
 Proyecto Express minimal que sirve como base para una aplicación de estacionamiento.
 
-## Estructura principal (visión rápida)
-- Archivos raíz:
+## Estructura principal backend (visión rápida)
+- Archivos raíz backend:
   - [.env](.env)
   - [.gitignore](.gitignore)
   - [app.js](app.js)

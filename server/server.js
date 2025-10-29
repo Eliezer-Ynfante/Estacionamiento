@@ -1,10 +1,10 @@
 const express = require('express');
+const path = require('path');
+
 const app = express();
 
-// Middleware para interpretar JSON
 app.use(express.json());
 
-// Ruta de ejemplo
 app.get('/', (req, res) => {
   res.send('¡Servidor Express funcionando correctamente!');
 });
