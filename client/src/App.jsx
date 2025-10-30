@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import axios from 'axios';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [resultado, setResultado] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleCheckBackend = async () => {
+    setIsLoading(true);
+    setResultado('Probando conexión...');
+
+    try {
+      // 1. La respuesta 'res' contendrá el objeto { mensaje: '...' }
+      const res = await axios.get('/'); 
+      // 2. Accedemos directamente a la propiedad 'mensaje' de 'res.data'
+      const mensajeDelServidor = res.data.mensaje; 
+     // console.log('Mensaje del servidor:', mensajeDelServidor);
+      // 3. Mostramos el mensaje exacto
+      setResultado(`Conexión Exitosa: ${mensajeDelServidor}`);
+
+    } catch (err) {
+      console.error('Error al conectar con el backend:', err);
+      // Puedes intentar acceder al mensaje de error si el servidor lo envía en caso de fallo
+      const errorMessage = err.response?.data?.mensaje || 'Error al conectar. Verifica que el backend esté en ejecución.';
+      setResultado(`${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="container text-center bg-white p-10 rounded-lg shadow-xl max-w-sm">
+        <h1 className="text-2xl font-bold mb-6 text-gray-800">
+          Bienvenido al Sistema de Estacionamiento
+        </h1>
+        
+        <button 
+          id="btnCheckBackend"
+          onClick={handleCheckBackend}
+          disabled={isLoading}
+          className="px-6 py-3 mt-4 border-none bg-blue-600 text-white rounded-md cursor-pointer 
+                     hover:bg-blue-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isLoading ? 'Conectando...' : 'Probar conexión al backend'}
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        
+        <div 
+          id="resultado" 
+          className={`mt-5 font-semibold ${resultado.includes('Conexión Exitosa') ? 'text-green-600' : 'text-red-600'}`}
+        >
+          {resultado}
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
