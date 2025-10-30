@@ -1,30 +1,36 @@
-const express = require('express');
 const mysql = require('mysql2/promise');
-
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
-const app = express();
-app.disable('x-powered-by')
-app.use(express.json());
+// Configuración de la conexión
+const dbConfig = {
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'estacionamiento',
+    port: process.env.DB_PORT || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+};
 
-let connection;
-(async () => {
-  try {
-    connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      port: process.env.DB_PORT
-    });
-    console.log('Conexión establecida con MySQL');
+const pool = mysql.createPool(dbConfig);
 
-    const [rows, fields] = await connection.execute('SELECT * FROM users');
-    console.table(rows);
-    console.table(fields);
-  } catch (err) {
-    console.error('Error de conexion', err.message);
-    process.exit(1);
-  }
-}) ();
+// Función para probar la conexión
+async function testConnection() {
+    try {
+        const connection = await pool.getConnection();
+        console.log('Conexión exitosa a la base de datos MySQL');
+        connection.release();
+        return true;
+    } catch (error) {
+        console.error('Error al conectar a la base de datos:', error.message);
+        return false;
+    }
+}
+
+module.exports = {
+    pool,
+    testConnection
+};
+
