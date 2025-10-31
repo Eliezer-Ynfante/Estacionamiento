@@ -16,7 +16,7 @@ function App() {
       const mensajeDelServidor = res.data.mensaje; 
      // console.log('Mensaje del servidor:', mensajeDelServidor);
       // 3. Mostramos el mensaje exacto
-      setResultado(`Conexión Exitosa: ${mensajeDelServidor}`);
+      setResultado(`Conexión Exitosa: ${mensajeDelServidor? mensajeDelServidor : 'No se recibió mensaje del servidor.'}`);
 
     } catch (err) {
       console.error('Error al conectar con el backend:', err);
