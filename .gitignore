@@ -2,17 +2,19 @@
 # Node.js / Express Backend .gitignore
 # ========================================
 
-# Entorno
-/server/.env
-.env.local
-.env.*.local
+# Archivos de entorno
+server/.env
+server/.env.local
+server/.env.*.local
 
 # Dependencias
-/server/node_modules/
-/client/node_modules/
-#Modulos
-/server/package-lock.json
-/client/package-lock.json
-/server/.package-lock.json
-# Logs
-/server/logs/
+server/node_modules/
+client/node_modules/
+
+# Archivos de bloqueo (lockfiles)
+server/package-lock.json
+client/package-lock.json
+
+# Registros (logs)
+server/logs/
+
