@@ -1,6 +1,6 @@
 # Estacionamiento — Resumen del proyecto y cómo iniciarlo
 
-Proyecto Express que sirve como base para una aplicación de estacionamiento. Este README refleja los recientes cambios en la estructura: ahora el servidor está contenido en la carpeta `server/` y los recursos públicos están en `public/`.
+Proyecto Express que sirve como base para una aplicación de estacionamiento. Este README refleja los recientes cambios en la estructura: ahora el servidor está contenido en la carpeta `server/` y los recursos del frontend están en `client/`.
 
 ## Requisitos
 - Node.js v16+ recomendado
@@ -23,21 +23,9 @@ Proyecto Express que sirve como base para una aplicación de estacionamiento. Es
       - controllers/
       - database/
       - middleware/
-      - public/             — recursos estáticos servidos por Express (si aplica)
-        - css/
-        - js/
-        - images/
-        - upload/
       - routes/
       - security/
       - services/
-      - views/
-        - admin/
-        - auth/
-        - contents/
-        - layout/
-        - mod/
-        - partials/
 
 ## Punto de entrada
 - El servidor se inicia desde `server/server.js`. Dentro de `server/src/` está el código modular (por ejemplo `app.js`).
