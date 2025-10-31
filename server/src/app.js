@@ -1,9 +1,9 @@
 const express = require('express');
+const app = express();
 const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
-
-const app = express();
+const { notFound, errorHandler } = require('./middleware/error.middleware');
 
 // Middlewares
 app.use(cors()); // Habilitar CORS
@@ -12,13 +12,11 @@ app.use(express.urlencoded({ extended: true })); // Parsear datos de formularios
 
 // Ruta principal
 app.get('/', (req, res) => {
-  res.json({ mensaje: 'Backend de estacionamiento funcionando correctamente' });
+  res.status(200).json({ message: 'API de Estacionamiento funcionando correctamente' });
 });
 
 // Middleware de manejo de errores
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ mensaje: 'Error interno del servidor' });
-});
+app.use(notFound);
+app.use(errorHandler);
 
 module.exports = app;
