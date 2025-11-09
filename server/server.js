@@ -1,5 +1,5 @@
 const app = require('./src/app');
-const { testConnection } = require('./src/config/conexion');
+const { sequelize, testConnection } = require('./src/config/sequelize');
 
 testConnection();
 
