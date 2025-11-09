@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 function App() {
   const [resultado, setResultado] = useState('');
@@ -10,18 +9,23 @@ function App() {
     setResultado('Probando conexión...');
 
     try {
-      // 1. La respuesta 'res' contendrá el objeto { mensaje: '...' }
-      const res = await axios.get('/'); 
-      // 2. Accedemos directamente a la propiedad 'mensaje' de 'res.data'
-      const mensajeDelServidor = res.data.mensaje; 
-     // console.log('Mensaje del servidor:', mensajeDelServidor);
-      // 3. Mostramos el mensaje exacto
-      setResultado(`Conexión Exitosa: ${mensajeDelServidor? mensajeDelServidor : 'No se recibió mensaje del servidor.'}`);
+      const res = await fetch('/api/inicio');
+
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => null);
+        const msg = errBody?.message || errBody?.error || res.statusText || `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
+
+      const body = await res.json();
+      const mensajeDelServidor = body?.data?.message || body?.message || JSON.stringify(body);
+
+      setResultado(`Conexión Exitosa: ${mensajeDelServidor ? mensajeDelServidor : 'No se recibió mensaje del servidor.'}`);
 
     } catch (err) {
       console.error('Error al conectar con el backend:', err);
       // Puedes intentar acceder al mensaje de error si el servidor lo envía en caso de fallo
-      const errorMessage = err.response?.data?.mensaje || 'Error al conectar. Verifica que el backend esté en ejecución.';
+      const errorMessage = err.message || 'Error al conectar. Verifica que el backend esté en ejecución.';
       setResultado(`${errorMessage}`);
     } finally {
       setIsLoading(false);
