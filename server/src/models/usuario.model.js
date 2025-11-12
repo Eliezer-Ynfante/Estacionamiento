@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
       allowNull: true,
       unique: true
     },
-    hash_contrasena: {
+    password: {
       type: DataTypes.CHAR(60),
       allowNull: false
     },
