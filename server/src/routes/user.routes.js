@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controller');
 const  { verifyToken } = require('../middleware/auth.middleware');
-const validaciones = require('../middleware/auth.middleware');
+const validaciones = require('../middleware/auth.validation');
 
 // GET /api/user/me
 router.get('/me', verifyToken, (req, res) => {
