@@ -35,12 +35,11 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: 'pendiente'
     },
-    costo_total_calculado: {
+    costo_total: {
       type: DataTypes.DECIMAL(10,2),
       allowNull: false,
       defaultValue: 0.00
     },
-    // fecha_creacion será manejada por createdAt mediante timestamps
   }, {
     tableName: 'Reservas',
     timestamps: true,

@@ -13,6 +13,9 @@ const helmet = require("helmet");
 const mainRoutes = require("./routes/main.routes");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
+const reservarRoutes = require("./routes/reservar.routes");
+const plazaRoutes = require("./routes/plaza.routes");
+
 
 app.use(cookieParser());
 
@@ -47,6 +50,8 @@ app.use(session({
 app.use("/api", mainRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/service", reservarRoutes);
+app.use("/api/plaza", plazaRoutes);
 
 // Middleware de manejo de errores
 app.use(notFound);
