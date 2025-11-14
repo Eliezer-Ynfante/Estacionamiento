@@ -16,6 +16,9 @@ router.get('/me', verifyToken, (req, res) => {
 router.get('update-me', verifyToken, validaciones.update , userController.actualizarUsuario);
 router.delete('delete-me', verifyToken, userController.eliminarUsuario);
 
+router.post('/vehiculos', verifyToken, userController.crear_vehiculo);
+router.get('/vehiculos', verifyToken, userController.listar_vehiculos);
+
 module.exports = router;
 
 

@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const db = require('../models');
 
-
 const Usuario = db.Usuario;
 
 const loginLimiter = rateLimit({
@@ -85,10 +84,8 @@ exports.login = [
         success: true,
         message: 'Inicio de sesión exitoso',
         data: {
-          usuario_id: user.usuario_id,
           nombre: user.nombre,
           email: user.email,
-          rol_id: user.rol_id,
         },
       });
     } catch (err) {
@@ -117,7 +114,6 @@ exports.register = [
         return res.status(409).json({ success: false, message: 'Email ya registrado' });
       }
 
-      // ✅ AÑADIDO: Validar fortaleza de contraseña
       if (password.length < 8) {
         return res.status(400).json({
           success: false,
@@ -154,10 +150,8 @@ exports.register = [
         success: true,
         message: 'Usuario registrado exitosamente',
         data: {
-          usuario_id: newUser.usuario_id,
           nombre: newUser.nombre,
           email: newUser.email,
-          rol_id: newUser.rol_id,
         },
       });
     } catch (err) {
@@ -167,7 +161,7 @@ exports.register = [
   }
 ];
 
-//Logout funcional
+// ===============================
 exports.logout = (req, res, next) => {
   try {
     // Destruir sesión

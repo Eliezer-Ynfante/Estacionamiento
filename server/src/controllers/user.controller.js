@@ -1,5 +1,6 @@
 const db = require('../models');
 const Usuario = db.Usuario;
+const Vehiculo = db.Vehiculo;
 
 exports.actualizarUsuario = async (req, res) => {
     const id = req.params.id;
@@ -31,4 +32,49 @@ exports.eliminarUsuario = async (req, res) => {
     } catch (error) {
         res.status(500).json({ mensaje: 'Error al eliminar el usuario', error: error.message });
     }
-}
+};
+
+exports.crear_vehiculo = async (req, res) => {
+    const id = req.session.userId;
+    const { placa, marca, color } = req.body;
+    try {
+        const usuario = await Usuario.findByPk(id);
+        if (!usuario) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+        const nuevoVehiculo = await db.Vehiculo.create({
+            placa,
+            marca,
+            color,
+            usuario_id: id
+        });
+        res.status(201).json({ mensaje: 'Vehículo creado exitosamente', vehiculo: nuevoVehiculo });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al crear el vehículo', error: error.message });
+    }
+};
+
+exports.listar_vehiculos = async (req, res) => {
+    const id = req.session.userId;
+    try {
+        const vehiculos = await Vehiculo.findAll({ where: { usuario_id: id } });
+        res.status(200).json({ vehiculos });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al listar los vehículos', error: error.message });
+    }
+};
+
+exports.eliminar_vehiculo = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const vehiculo = await Vehiculo.findByPk(id);
+        if (!vehiculo) {
+            return res.status(404).json({ mensaje: 'Vehículo no encontrado' });
+        }
+        await vehiculo.destroy();
+        res.status(200).json({ mensaje: 'Vehículo eliminado exitosamente' });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al eliminar el vehículo', error: error.message });
+    }
+};
+

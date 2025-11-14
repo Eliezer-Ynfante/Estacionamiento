@@ -94,3 +94,16 @@ exports.isOwner = (req, res, next) => {
     message: 'No tiene permisos para modificar este recurso'
   });
 };
+
+// ===============================
+// Middleware para verificar que el usuario inicio sesión
+// ===============================
+const verificarAutenticacion = (req, res, next) => {
+    if (!req.session || !req.session.userId) {
+        return res.status(401).json({
+            success: false,
+            message: 'Debe iniciar sesión para realizar esta acción'
+        });
+    }
+    next();
+};
