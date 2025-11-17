@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+:root {
+    --color-primary: #ED4106;       /* Rojo anaranjado principal */
+    --color-secondary: #014252;     /* Azul profundo secundario */
+    --color-neutral-light: #D9D9D9; /* Gris claro para fondos */
+    --color-accent-dark: #8D0707;   /* Rojo oscuro/acento */
+    --color-tertiary: #C5C8D9;      /* Gris azulado suave */
+
+    --color-base: #B33F00;          /* Marrón rojizo base */
+    --color-brown-dark: #662400;    /* Marrón oscuro */
+    --color-teal: #006663;          /* Verde azulado */
+}
