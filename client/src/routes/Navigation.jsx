@@ -1,17 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { CircleUserRound, Menu, X } from 'lucide-react';
 import logo from '../assets/image/IntiPark.png';
 
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState('#inicio');
+  const location = useLocation();
 
   const navLinks = [
-    { name: 'INICIO', href: '#inicio' },
-    { name: 'RESERVAR', href: '#servicios' },
-    { name: 'NOSOTROS', href: '#seguros' },
-    { name: 'CONTACTO', href: '#contacto' },
+    { name: 'INICIO', path: '/', type: 'route' },
+    { name: 'RESERVAR', path: '/reservar', type: 'route' },
+    { name: 'NOSOTROS', path: '/nosotros', type: 'route' },
+    { name: 'CONTACTO', path: '/contacto', type: 'route' },
   ];
+
+  // Función para determinar si un link está activo
+  const isActive = (link) => {
+    if (link.type === 'route') {
+      return location.pathname === link.path;
+    } else {
+      // Para anclas, verificar si estamos en la página de inicio y el hash coincide
+      return location.pathname === '/' && location.hash === link.href;
+    }
+  };
+
+  // Cerrar menú móvil al cambiar de ruta
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname, location.hash]);
+
+  // Función para manejar clicks en anclas
+  const handleAnchorClick = (href, e) => {
+    // Si no estamos en la página de inicio, navegar primero
+    if (location.pathname !== '/') {
+      e.preventDefault();
+      // Navegar a inicio y luego al ancla
+      window.location.href = `/${href}`;
+    } else {
+      // Scroll suave al ancla
+      const element = document.querySelector(href);
+      if (element) {
+        e.preventDefault();
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    setMenuOpen(false);
+  };
 
   return (
     <nav className="bg-black w-full">
@@ -21,7 +55,7 @@ export default function NavBar() {
         <div className="flex items-center justify-between h-20 relative">
 
           {/* LOGO */}
-          <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer">
+          <NavLink to="/" className="flex items-center gap-3 shrink-0 cursor-pointer">
             <img src={logo} className="w-12 h-12" alt="IntiPark Logo" />
             <div className="leading-tight">
               <div className="text-xl font-bold text-gray-200">IntiPark</div>
@@ -29,28 +63,49 @@ export default function NavBar() {
                 Estacionamiento Seguro
               </div>
             </div>
-          </div>
+          </NavLink>
 
           {/* LINKS CENTRADOS (DESKTOP) */}
           <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 gap-10">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setActiveLink(link.href)}
-                className={`text-sm font-light tracking-widest transition-colors duration-200 ${
-                  activeLink === link.href
-                    ? 'text-orange-500'
-                    : 'text-gray-200 hover:text-orange-500'
-                }`}
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              if (link.type === 'route') {
+                return (
+                  <NavLink
+                    key={link.name}
+                    to={link.path}
+                    className={({ isActive }) =>
+                      `text-sm font-light tracking-widest transition-colors duration-200 ${
+                        isActive
+                          ? 'text-orange-500'
+                          : 'text-gray-200 hover:text-orange-500'
+                      }`
+                    }
+                  >
+                    {link.name}
+                  </NavLink>
+                );
+              } else {
+                const active = isActive(link);
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => handleAnchorClick(link.href, e)}
+                    className={`text-sm font-light tracking-widest transition-colors duration-200 ${
+                      active
+                        ? 'text-orange-500'
+                        : 'text-gray-200 hover:text-orange-500'
+                    }`}
+                  >
+                    {link.name}
+                  </a>
+                );
+              }
+            })}
           </div>
 
           {/* LOGIN (DESKTOP) */}
-          <button className="hidden lg:flex items-center gap-2 text-gray-300 hover:text-orange-500 transition-colors duration-200">
+          <button className="hidden lg:flex items-center gap-2 text-gray-300 hover:text-orange-700 transition-colors duration-200">
             <CircleUserRound size={26} />
             <span className="text-sm font-light">INICIAR SESIÓN</span>
           </button>
@@ -58,7 +113,7 @@ export default function NavBar() {
           {/* BOTÓN HAMBURGUESA (MÓVIL) */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="lg:hidden text-gray-300 hover:text-orange-500 p-2 transition-colors"
+            className="lg:hidden text-gray-300 hover:text-orange-700 p-2 transition-colors"
           >
             {menuOpen ? <X size={26} /> : <Menu size={26} />}
           </button>
@@ -72,26 +127,47 @@ export default function NavBar() {
           <div className="px-6 py-4 space-y-4">
 
             {/* Links Mobile */}
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => {
-                  setActiveLink(link.href);
-                  setMenuOpen(false);
-                }}
-                className={`block text-base font-medium transition-colors duration-200 ${
-                  activeLink === link.href
-                    ? 'text-orange-500'
-                    : 'text-gray-300 hover:text-orange-500'
-                }`}
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link);
+              const linkClassName = `block text-base font-medium transition-colors duration-200 ${
+                active
+                  ? 'text-orange-500'
+                  : 'text-gray-300 hover:text-orange-500'
+              }`;
+
+              if (link.type === 'route') {
+                return (
+                  <NavLink
+                    key={link.name}
+                    to={link.path}
+                    onClick={() => setMenuOpen(false)}
+                    className={({ isActive }) =>
+                      `block text-base font-medium transition-colors duration-200 ${
+                        isActive
+                          ? 'text-orange-500'
+                          : 'text-gray-300 hover:text-orange-500'
+                      }`
+                    }
+                  >
+                    {link.name}
+                  </NavLink>
+                );
+              } else {
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => handleAnchorClick(link.href, e)}
+                    className={linkClassName}
+                  >
+                    {link.name}
+                  </a>
+                );
+              }
+            })}
 
             {/* LOGIN MOBILE */}
-            <button className="flex items-center gap-3 text-gray-300 hover:text-orange-500 transition-colors pt-4">
+            <button className="flex items-center gap-3 text-gray-300 hover:text-orange-700 transition-colors pt-4">
               <CircleUserRound size={28} />
               <span className="text-base font-medium">INICIAR SESIÓN</span>
             </button>
