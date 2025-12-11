@@ -104,6 +104,7 @@ export default function NavBar() {
             })}
           </div>
 
+
           {/* LOGIN (DESKTOP) */}
           <button className="hidden lg:flex items-center gap-2 text-gray-300 hover:text-orange-700 transition-colors duration-200">
             <CircleUserRound size={26} />

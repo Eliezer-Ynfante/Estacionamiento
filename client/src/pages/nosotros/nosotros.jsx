@@ -1,25 +1,19 @@
 import { ArrowRight } from "lucide-react";
-import LoadingButton from "../../components/LoadingButton";
 import personal from "../../assets/image/p1.png";
+import LoadingButton from "../../components/LoadingButton";
 
-const Home = () => {
+const Nosotros = () => {
   return (
-    <div>
+    <div className="w-full min-h-screen">
       {/* Hero Section */}
-      <section className="bg-black text-white w-full py-4 lg:min-h-[700px] flex items-center">
+      <section className="bg-black text-white w-full lg:min-h-[700px] flex items-center">
         <div className="container mx-auto px-6 md:px-10">
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
             {/* Texto Izquierdo */}
             <div>
-              <h1 className="font-montserrat font-bold text-4xl md:text-6xl lg:text-8xl mb-2 leading-tight">
+              <h1 className="font-montserrat font-bold text-2xl md:text-2xl lg:text-3xl mb-2 leading-tight">
                 IntiPark
               </h1>
-
-              <h2 className="font-montserrat font-bold text-2xl md:text-4xl lg:text-5xl mb-6 text-gray-200 leading-tight">
-                Estacionamiento seguro
-              </h2>
 
               <p className="font-open-sans text-base md:text-lg lg:text-xl mb-8 text-gray-100 max-w-md">
                 Mantén tu vehículo protegido con la tecnología de seguridad más
@@ -48,8 +42,12 @@ const Home = () => {
             </div>
 
             <div className="flex justify-center lg:justify-end items-center">
-             {/* <Carousel /> */}
-             <img src={personal} alt="personal" className="w-full h-full object-cover rounded-md" />
+              {/* <Carousel /> */}
+              <img
+                src={personal}
+                alt="personal"
+                className="w-full h-full object-cover rounded-md"
+              />
             </div>
           </div>
         </div>
@@ -58,4 +56,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Nosotros;
