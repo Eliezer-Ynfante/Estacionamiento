@@ -128,7 +128,7 @@ export function AboutView() {
               {/* Bloque de Valor Adicional */}
                <div className="mt-8 p-4 bg-neutral-800 border-l-4 border-orange-600">
                   <div className="flex items-center gap-3">
-                      <Users className="w-6 h-6 text-orange-600 flex-shrink-0" />
+                      <Users className="w-6 h-6 text-orange-600 shrink-0" />
                       <p className="text-sm text-neutral-300 font-semibold">
                           <span className="text-white">Experiencia:</span> Más de 15 años liderando la gestión de parqueos en Perú.
                       </p>
@@ -141,7 +141,7 @@ export function AboutView() {
               <img
                 src={persona}
                 alt="Estación de control de estacionamiento"
-                className="w-full h-[600px] object-cover lg:aspect-[2/3]"
+                className="w-full h-[600px] object-cover lg:aspect-2/3"
               />
             </div>
           </div>
