@@ -4,9 +4,13 @@ INSERT INTO `roles` (`nombre_rol`) VALUES
 ('Cliente');
 
 -- Inserción en la tabla tarifas
-INSERT INTO `tarifas` (`nombre`, `precio_hora`, `precio_dia`, `precio_semana`) VALUES
-('Estándar Auto', 2.50, 20.00, 100.00),
-('Premium Moto', 1.50, 12.00, 60.00);
+INSERT INTO Tarifas (nombre, precio_hora, precio_dia, precio_semana, descripcion) VALUES
+('Auto Básico', 5.00, 30.00, 150.00, 'Acceso inmediato, Tarifa por hora, Sin reserva previa'),
+('Auto Premium', 7.00, 60.00, 280.00, 'Espacio cubierto, Prioridad de entrada, Seguro de daños menores'),
+('Moto Básico', 2.00, 12.00, 60.00, 'Estacionamiento seguro, Sin compromiso, Rápido acceso'),
+('Moto Premium', 3.50, 25.00, 120.00, 'Zona vigilada 24/7, Carga de batería gratis, Asistencia en el sitio'),
+('Camion Básico', 15.00, 80.00, 400.00, 'Acceso amplio, Espacio garantizado, Puertas automáticas'),
+('Camion Premium', 20.00, 150.00, 700.00, 'Zona de carga prioritaria, Vigilancia completa, Asesor disponible');
 
 -- Inserción en la tabla plazas (tarifa_id 1 = Estándar Auto, 2 = Premium Moto)
 INSERT INTO `plazas` (`tarifa_id`, `numero_plaza`, `tipo`, `esta_activa`) VALUES
