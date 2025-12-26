@@ -15,13 +15,14 @@ const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const reservarRoutes = require("./routes/reservar.routes");
 const plazaRoutes = require("./routes/plaza.routes");
+const tarifasRoutes = require("./routes/tarifas.routes");
 
 
 app.use(cookieParser());
 
 // Middlewares
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -52,6 +53,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/service", reservarRoutes);
 app.use("/api/plaza", plazaRoutes);
+app.use("/api/tarifas", tarifasRoutes);
 
 // Middleware de manejo de errores
 app.use(notFound);
