@@ -1,15 +1,11 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const Usuario = sequelize.define('Usuario', {
-    usuario_id: {
+  const Invitado = sequelize.define('Invitado', {
+    invitado_id: {
       type: DataTypes.BIGINT.UNSIGNED,
       primaryKey: true,
       autoIncrement: true,
-      allowNull: false
-    },
-    rol_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
     },
     nombre: {
@@ -18,25 +14,35 @@ module.exports = (sequelize) => {
     },
     email: {
       type: DataTypes.STRING(150),
-      allowNull: false,
+      allowNull: true,
       unique: true
     },
     telefono: {
       type: DataTypes.STRING(20),
-      allowNull: true,
-      unique: true
+      allowNull: true
     },
-    hash_contrasena: {
-      type: DataTypes.CHAR(60),
+    placa_vehiculo: {
+      type: DataTypes.STRING(10),
       allowNull: false
     },
+    tipo_vehiculo: {
+      type: DataTypes.STRING(30),
+      allowNull: false
+    },
+    marca_vehiculo: {
+      type: DataTypes.STRING(50),
+      allowNull: true
+    },
+    color_vehiculo: {
+      type: DataTypes.STRING(30),
+      allowNull: true
+    }
   }, {
-    tableName: 'Usuarios',
-    // Mapear createdAt a la columna existente `fecha_registro` y no usar updatedAt
+    tableName: 'Invitados',
     timestamps: true,
     createdAt: 'fecha_registro',
     updatedAt: false
   });
 
-  return Usuario;
+  return Invitado;
 };

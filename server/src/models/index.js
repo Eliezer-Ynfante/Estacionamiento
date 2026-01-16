@@ -13,7 +13,10 @@ const vehiculoModel = require('./vehiculo.model');
 const plazaModel = require('./plaza.model');
 const reservaModel = require('./reserva.model');
 const pagoModel = require('./pago.model');
+const invitadoModel = require('./invitado.model');
+const serviceAditionalModel = require('./service_aditional.model');
 
+// Definir modelos
 db.Role = roleModel(sequelize);
 db.Tarifa = tarifaModel(sequelize);
 db.Usuario = usuarioModel(sequelize);
@@ -21,6 +24,8 @@ db.Vehiculo = vehiculoModel(sequelize);
 db.Plaza = plazaModel(sequelize);
 db.Reserva = reservaModel(sequelize);
 db.Pago = pagoModel(sequelize);
+db.Invitado = invitadoModel(sequelize);
+db.ServiceAditional = serviceAditionalModel(sequelize);
 
 // Asociaciones
 db.Role.hasMany(db.Usuario, { foreignKey: 'rol_id' });
@@ -32,8 +37,14 @@ db.Plaza.belongsTo(db.Tarifa, { foreignKey: 'tarifa_id' });
 db.Usuario.hasMany(db.Vehiculo, { foreignKey: 'usuario_id' });
 db.Vehiculo.belongsTo(db.Usuario, { foreignKey: 'usuario_id' });
 
+db.Invitado.hasMany(db.Vehiculo, { foreignKey: 'invitado_id' });
+db.Vehiculo.belongsTo(db.Invitado, { foreignKey: 'invitado_id' });
+
 db.Usuario.hasMany(db.Reserva, { foreignKey: 'usuario_id' });
 db.Reserva.belongsTo(db.Usuario, { foreignKey: 'usuario_id' });
+
+db.Invitado.hasMany(db.Reserva, { foreignKey: 'invitado_id' });
+db.Reserva.belongsTo(db.Invitado, { foreignKey: 'invitado_id' });
 
 db.Vehiculo.hasMany(db.Reserva, { foreignKey: 'vehiculo_id' });
 db.Reserva.belongsTo(db.Vehiculo, { foreignKey: 'vehiculo_id' });

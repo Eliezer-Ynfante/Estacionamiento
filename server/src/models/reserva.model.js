@@ -10,15 +10,19 @@ module.exports = (sequelize) => {
     },
     usuario_id: {
       type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false
+      allowNull: true
+    },
+    invitado_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true
     },
     plaza_id: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
+      allowNull: true
     },
     vehiculo_id: {
       type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false
+      allowNull: true
     },
     fecha_hora_inicio: {
       type: DataTypes.DATE,
@@ -35,7 +39,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: 'pendiente'
     },
-    costo_total: {
+    costo_total_calculado: {
       type: DataTypes.DECIMAL(10,2),
       allowNull: false,
       defaultValue: 0.00

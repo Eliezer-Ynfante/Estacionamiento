@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const reservar = require('../controllers/reservar.controller');
 const validar = require('../middleware/reservar.validation');
-const { verifyToken } = require('../middleware/auth.middleware');
+const { verifyToken, optionalVerifyToken } = require('../middleware/auth.middleware');
 const limit = require('../middleware/limit.middleware');
 
-router.post('/reservar', verifyToken, validar, reservar.crearReservaYPagar);
+// Crear reserva (funciona tanto para autenticados como invitados)
+router.post('/reservar', optionalVerifyToken, validar, reservar.crearReservaYPagar);
 
 router.get('/historial', verifyToken, limit,  reservar.historial);
 
