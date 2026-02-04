@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { CircleUserRound, Menu, X } from 'lucide-react';
-import logo from '../assets/image/IntiPark.png';
+import { CircleUserRound, Menu, X, LogOut } from 'lucide-react';
+import logo from '@assets/image/IntiPark.png';
+import { AuthContext } from '@context/AuthContext';
 
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useContext(AuthContext);
 
   const navLinks = [
     { name: 'INICIO', path: '/', type: 'route' },
     { name: 'RESERVAR', path: '/reservar', type: 'route' },
     { name: 'NOSOTROS', path: '/nosotros', type: 'route' },
-    { name: 'CONTACTO', path: '/contacto', type: 'route' },
+    { name: 'CONTACTO', path: '/contacto', type: 'route' }
   ];
 
   // Función para determinar si un link está activo
@@ -105,11 +107,51 @@ export default function NavBar() {
           </div>
 
 
-          {/* LOGIN (DESKTOP) */}
-          <button className="hidden lg:flex items-center gap-2 text-gray-300 hover:text-orange-700 transition-colors duration-200">
-            <CircleUserRound size={26} />
-            <span className="text-sm font-light">INICIAR SESIÓN</span>
-          </button>
+          {/* LOGIN/PROFILE (DESKTOP) */}
+          <div className="hidden lg:flex items-center gap-4">
+            {isAuthenticated && user ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <CircleUserRound size={26} className="text-orange-500" />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-light text-gray-300">{user.nombre}</span>
+                    <span className="text-xs text-gray-400">{user.email}</span>
+                  </div>
+                </div>
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    `text-sm font-light text-gray-300 hover:text-orange-500 transition-colors duration-200 ${
+                      isActive ? 'text-orange-500' : ''
+                    }`
+                  }
+                >
+                  Mi Cuenta
+                </NavLink>
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-2 text-gray-300 hover:text-red-500 transition-colors duration-200"
+                >
+                  <LogOut size={20} />
+                  <span className="text-sm font-light">SALIR</span>
+                </button>
+              </>
+            ) : (
+              <NavLink
+                to="/login"
+                className={({ isActive }) =>
+                  `flex items-center gap-2 transition-colors duration-200 ${
+                    isActive
+                      ? 'text-orange-500'
+                      : 'text-gray-300 hover:text-orange-500'
+                  }`
+                }
+              >
+                <CircleUserRound size={26} />
+                <span className="text-sm font-light">INICIAR SESIÓN</span>
+              </NavLink>
+            )}
+          </div>
 
           {/* BOTÓN HAMBURGUESA (MÓVIL) */}
           <button
@@ -168,10 +210,48 @@ export default function NavBar() {
             })}
 
             {/* LOGIN MOBILE */}
-            <button className="flex items-center gap-3 text-gray-300 hover:text-orange-700 transition-colors pt-4">
-              <CircleUserRound size={28} />
-              <span className="text-base font-medium">INICIAR SESIÓN</span>
-            </button>
+            {isAuthenticated && user ? (
+              <>
+                <div className="flex items-center gap-3 text-gray-300 pt-4 pb-4 border-t border-gray-800">
+                  <CircleUserRound size={28} className="text-orange-500" />
+                  <div className="flex flex-col">
+                    <span className="text-base font-medium">{user.nombre}</span>
+                    <span className="text-xs text-gray-400">{user.email}</span>
+                  </div>
+                </div>
+                <NavLink
+                  to="/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `block text-base font-medium text-gray-300 hover:text-orange-500 transition-colors duration-200 ${
+                      isActive ? 'text-orange-500' : ''
+                    }`
+                  }
+                >
+                  Mi Cuenta
+                </NavLink>
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-3 text-gray-300 hover:text-red-500 transition-colors w-full"
+                >
+                  <LogOut size={28} />
+                  <span className="text-base font-medium">SALIR</span>
+                </button>
+              </>
+            ) : (
+              <NavLink
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 text-gray-300 hover:text-orange-700 transition-colors ${
+                    isActive ? 'text-orange-500' : ''
+                  }`
+                }
+              >
+                <CircleUserRound size={28} />
+                <span className="text-base font-medium">INICIAR SESIÓN</span>
+              </NavLink>
+            )}
 
           </div>
         </div>

@@ -1,10 +1,13 @@
 const app = require('./src/app');
-const { sequelize, testConnection } = require('./src/config/sequelize');
+const { testConnection } = require('./src/config/sequelize');
+require("dotenv").config();
 
 testConnection();
 
-app.listen(3000, () => {
-  console.log('Servidor corriendo en http://localhost:3000');
-  console.log(`Modo: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Cookies httpOnly: HABILITADAS`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Mode: ${process.env.NODE_ENV}`);
+  }
 });

@@ -6,7 +6,7 @@ const LoadingButton = ({
   className,
   children,
   loadingText = null,
-  delay = 1200,
+  delay = 800,
   icon = null,
 }) => {
   const [loading, setLoading] = useState(false);

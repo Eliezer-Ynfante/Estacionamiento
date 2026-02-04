@@ -1,26 +1,29 @@
+// 1. LIBRERÍAS EXTERNAS
 const express = require("express");
-const app = express();
-const path = require("path");
-const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
-require("dotenv").config();
-const { notFound, errorHandler } = require("./middleware/error.middleware");
 const morgan = require("morgan");
 const helmet = require("helmet");
+require("dotenv").config();
 
-// Rutas
-const mainRoutes = require("./routes/main.routes");
-const authRoutes = require("./routes/auth.routes");
-const userRoutes = require("./routes/user.routes");
-const reservarRoutes = require("./routes/reservar.routes");
-const plazaRoutes = require("./routes/plaza.routes");
-const tarifasRoutes = require("./routes/tarifas.routes");
+// 2. MIDDLEWARES LOCALES
+const { notFound, errorHandler } = require("./middleware/error.middleware");
+const { cookieJwtAuth } = require("./middleware/cookieJWTAuth");
+const limite = require("./middleware/limit.middleware");
 
+// 3. CONTROLADORES
+const authCtrl = require("./controllers/auth.controller");
+const userCtrl = require("./controllers/user.controller");
+const vehicleCtrl = require("./controllers/vehicle.controller");
+const rateCtrl = require("./controllers/rate.controller");
+const bookingCtrl = require("./controllers/booking.controller");
+const serviceCtrl = require("./controllers/service.controller");
+const contactCtrl = require("./controllers/contact.controller");
 
-app.use(cookieParser());
+const app = express();
 
-// Middlewares
+// 4. CONFIGURACIÓN DE MIDDLEWARES GLOBALES
+app.use(helmet());
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
@@ -28,34 +31,68 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-app.use(express.json()); // Parsear JSON
-app.use(express.urlencoded({ extended: true })); // Parsear datos de formularios
-app.use(helmet());
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+    app.use(morgan("dev"));
+}
 
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'mi-secreto-super-seguro',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000, // 24 horas
-    },
-    // store: new RedisStore({ client: redisClient })
-}));
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(cookieParser());
 
+// --- Autenticación ---
+const authRouter = express.Router();
+authRouter.use(limite);
+authRouter.post("/registro", authCtrl.registro);
+authRouter.post("/login", authCtrl.login);
+authRouter.post("/logout", cookieJwtAuth, authCtrl.logout);
+app.use("/api/auth", authRouter);
 
-// Montar rutas de la API
-app.use("/api", mainRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/service", reservarRoutes);
-app.use("/api/plaza", plazaRoutes);
-app.use("/api/tarifas", tarifasRoutes);
+// --- Usuario ---
+const userRouter = express.Router();
+userRouter.use(cookieJwtAuth, limite);
+userRouter.get("/me", userCtrl.obtenerPerfil);
+userRouter.patch("/me", userCtrl.actualizarPerfil);
+userRouter.post("/me/password", userCtrl.cambiarContraseña);
+app.use("/api/user", userRouter);
 
-// Middleware de manejo de errores
+// --- Vehículos ---
+const vehicleRouter = express.Router();
+vehicleRouter.use(limite);
+vehicleRouter.post("/create", cookieJwtAuth, vehicleCtrl.registrarVehiculo);
+vehicleRouter.get("/types", vehicleCtrl.obtenerTiposVehiculos);
+vehicleRouter.get("/me", cookieJwtAuth, vehicleCtrl.obtenerMisVehiculos);
+vehicleRouter.get("/:id", cookieJwtAuth, vehicleCtrl.obtenerVehiculo);
+vehicleRouter.patch("/:id", cookieJwtAuth, vehicleCtrl.actualizarVehiculo);
+vehicleRouter.delete("/:id", cookieJwtAuth, vehicleCtrl.eliminarVehiculo);
+app.use("/api/vehicle", vehicleRouter);
+
+// --- Tarifas ---
+const rateRouter = express.Router();
+rateRouter.use(limite);
+rateRouter.get("/rates", rateCtrl.obtenerTodasTarifas);
+rateRouter.get("/rates/:id", rateCtrl.obtenerTarifaPorId);
+rateRouter.get("/vehicle/:tipo_vehiculo_id", rateCtrl.obtenerTarifaPorTipo);
+app.use("/api/rate", rateRouter);
+
+// --- Reservas ---
+const bookingRouter = express.Router();
+bookingRouter.use(cookieJwtAuth, limite);
+bookingRouter.post("/create", bookingCtrl.crearReserva);
+app.use("/api/booking", bookingRouter);
+
+// --- Servicios ---
+const serviceRouter = express.Router();
+serviceRouter.use(limite);
+serviceRouter.get("/services", serviceCtrl.obtenerServicios);
+app.use("/api/service", serviceRouter);
+
+// --- Contacto ---
+const contactRouter = express.Router();
+contactRouter.use(limite);
+contactRouter.post("/", contactCtrl.enviarContacto);
+app.use("/api/contact", contactRouter);
+
+// 6. MANEJO DE ERRORES
 app.use(notFound);
 app.use(errorHandler);
 

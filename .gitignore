@@ -1,20 +1,62 @@
 # ========================================
-# Node.js / Express Backend .gitignore
+# Entorno y secretos
 # ========================================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+*.env
 
-# Archivos de entorno
-server/.env
-server/.env.local
-server/.env.*.local
-
+# ========================================
 # Dependencias
+# ========================================
+node_modules/
 server/node_modules/
 client/node_modules/
 
-# Archivos de bloqueo (lockfiles)
+# ========================================
+# Lockfiles (opcional: quitar si quieres versionar package-lock.json)
+# ========================================
+package-lock.json
 server/package-lock.json
 client/package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Registros (logs)
+# ========================================
+# Logs y caché
+# ========================================
+logs/
 server/logs/
+client/logs/
+*.log
+.npm
+.cache
 
+# ========================================
+# OS y editor
+# ========================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-*
+
+# ========================================
+# Build y salida
+# ========================================
+dist/
+build/
+client/dist/
+*.tsbuildinfo
+
+# ========================================
+# Testing / cobertura
+# ========================================
+coverage/
+.nyc_output/

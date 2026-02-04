@@ -1,60 +1,76 @@
-const fs = require('fs');
-const path = require('path');
 const { sequelize } = require('../config/sequelize');
-
-const basename = path.basename(__filename);
-const db = {};
+const path = require('path');
 
 // Importar modelos
-const roleModel = require('./role.model');
-const tarifaModel = require('./tarifa.model');
-const usuarioModel = require('./usuario.model');
-const vehiculoModel = require('./vehiculo.model');
-const plazaModel = require('./plaza.model');
-const reservaModel = require('./reserva.model');
-const pagoModel = require('./pago.model');
-const invitadoModel = require('./invitado.model');
-const serviceAditionalModel = require('./service_aditional.model');
+const TipoVehiculo = require('./TipoVehiculo')(sequelize);
+const Usuario = require('./Usuario')(sequelize);
+const Vehiculo = require('./Vehiculo')(sequelize);
+const Tarifa = require('./Tarifa')(sequelize);
+const Plaza = require('./Plaza')(sequelize);
+const Servicio = require('./Servicio')(sequelize);
+const Reserva = require('./Reserva')(sequelize);
+const Pago = require('./Pago')(sequelize);
+const HistorialPlaza = require('./HistorialPlaza')(sequelize);
 
-// Definir modelos
-db.Role = roleModel(sequelize);
-db.Tarifa = tarifaModel(sequelize);
-db.Usuario = usuarioModel(sequelize);
-db.Vehiculo = vehiculoModel(sequelize);
-db.Plaza = plazaModel(sequelize);
-db.Reserva = reservaModel(sequelize);
-db.Pago = pagoModel(sequelize);
-db.Invitado = invitadoModel(sequelize);
-db.ServiceAditional = serviceAditionalModel(sequelize);
+// =====================================================
+// DEFINIR RELACIONES
+// =====================================================
 
-// Asociaciones
-db.Role.hasMany(db.Usuario, { foreignKey: 'rol_id' });
-db.Usuario.belongsTo(db.Role, { foreignKey: 'rol_id' });
+// TipoVehiculo
+TipoVehiculo.hasMany(Vehiculo, { foreignKey: 'tipo_vehiculo_id', as: 'vehiculos' });
+TipoVehiculo.hasMany(Tarifa, { foreignKey: 'tipo_vehiculo_id', as: 'tarifas' });
+TipoVehiculo.hasMany(Plaza, { foreignKey: 'tipo_vehiculo_id', as: 'plazas' });
 
-db.Tarifa.hasMany(db.Plaza, { foreignKey: 'tarifa_id' });
-db.Plaza.belongsTo(db.Tarifa, { foreignKey: 'tarifa_id' });
+// Usuario
+Usuario.hasMany(Vehiculo, { foreignKey: 'usuario_id', as: 'vehiculos', onDelete: 'CASCADE' });
+Usuario.hasMany(Reserva, { foreignKey: 'usuario_id', as: 'reservas', onDelete: 'CASCADE' });
 
-db.Usuario.hasMany(db.Vehiculo, { foreignKey: 'usuario_id' });
-db.Vehiculo.belongsTo(db.Usuario, { foreignKey: 'usuario_id' });
+// Vehiculo
+Vehiculo.belongsTo(Usuario, { foreignKey: 'usuario_id', as: 'usuario' });
+Vehiculo.belongsTo(TipoVehiculo, { foreignKey: 'tipo_vehiculo_id', as: 'tipo' });
+Vehiculo.hasMany(Reserva, { foreignKey: 'vehiculo_id', as: 'reservas' });
 
-db.Invitado.hasMany(db.Vehiculo, { foreignKey: 'invitado_id' });
-db.Vehiculo.belongsTo(db.Invitado, { foreignKey: 'invitado_id' });
+// Tarifa
+Tarifa.belongsTo(TipoVehiculo, { foreignKey: 'tipo_vehiculo_id', as: 'tipo' });
 
-db.Usuario.hasMany(db.Reserva, { foreignKey: 'usuario_id' });
-db.Reserva.belongsTo(db.Usuario, { foreignKey: 'usuario_id' });
+// Plaza
+Plaza.belongsTo(TipoVehiculo, { foreignKey: 'tipo_vehiculo_id', as: 'tipo' });
+Plaza.hasMany(Reserva, { foreignKey: 'plaza_id', as: 'reservas' });
+Plaza.hasMany(HistorialPlaza, { foreignKey: 'plaza_id', as: 'historial', onDelete: 'CASCADE' });
 
-db.Invitado.hasMany(db.Reserva, { foreignKey: 'invitado_id' });
-db.Reserva.belongsTo(db.Invitado, { foreignKey: 'invitado_id' });
+// Servicio
+Servicio.hasMany(Reserva, { foreignKey: 'servicio_id', as: 'reservas' });
 
-db.Vehiculo.hasMany(db.Reserva, { foreignKey: 'vehiculo_id' });
-db.Reserva.belongsTo(db.Vehiculo, { foreignKey: 'vehiculo_id' });
+// Reserva
+Reserva.belongsTo(Usuario, { foreignKey: 'usuario_id', as: 'usuario' });
+Reserva.belongsTo(Plaza, { foreignKey: 'plaza_id', as: 'plaza' });
+Reserva.belongsTo(Vehiculo, { foreignKey: 'vehiculo_id', as: 'vehiculo' });
+Reserva.belongsTo(Servicio, { foreignKey: 'servicio_id', as: 'servicio' });
+Reserva.hasOne(Pago, { foreignKey: 'reserva_id', as: 'pago', onDelete: 'CASCADE' });
+Reserva.hasMany(HistorialPlaza, { foreignKey: 'reserva_id', as: 'historialPlaza' });
 
-db.Plaza.hasMany(db.Reserva, { foreignKey: 'plaza_id' });
-db.Reserva.belongsTo(db.Plaza, { foreignKey: 'plaza_id' });
+// Pago
+Pago.belongsTo(Reserva, { foreignKey: 'reserva_id', as: 'reserva', onDelete: 'CASCADE' });
 
-db.Reserva.hasMany(db.Pago, { foreignKey: 'reserva_id' });
-db.Pago.belongsTo(db.Reserva, { foreignKey: 'reserva_id' });
+// HistorialPlaza
+HistorialPlaza.belongsTo(Plaza, { foreignKey: 'plaza_id', as: 'plaza', onDelete: 'CASCADE' });
 
-db.sequelize = sequelize;
+// Sincronizar modelos
+sequelize.sync({ alter: false }).then(() => {
+  console.log('Base de datos sincronizada');
+}).catch(err => {
+  console.error('Error al sincronizar BD:', err);
+});
 
-module.exports = db;
+module.exports = {
+  sequelize,
+  TipoVehiculo,
+  Usuario,
+  Vehiculo,
+  Tarifa,
+  Plaza,
+  Servicio,
+  Reserva,
+  Pago,
+  HistorialPlaza
+};
