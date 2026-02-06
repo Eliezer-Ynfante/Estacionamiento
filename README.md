@@ -1,6 +1,6 @@
 # 🅿️ Sistema de Gestión de Estacionamiento
 
-**Sistema integral de gestión de estacionamiento** con arquitectura full-stack moderna. Proporciona reservas en línea de plazas, gestión de tarifas, servicios adicionales, procesamiento de pagos y administración de usuarios en tiempo real.
+**Aplicación web de reserva de plazas de estacionamiento** con arquitectura full-stack. Permite a los usuarios autenticarse, reservar plazas, visualizar tarifas, contratar servicios adicionales y gestionar sus reservas y vehículos.
 
 **Desarrollado por:** Adriel Eliezer Ynfante Torres
 
