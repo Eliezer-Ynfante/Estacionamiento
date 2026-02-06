@@ -17,6 +17,7 @@ const userCtrl = require("./controllers/user.controller");
 const vehicleCtrl = require("./controllers/vehicle.controller");
 const rateCtrl = require("./controllers/rate.controller");
 const bookingCtrl = require("./controllers/booking.controller");
+const paymentCtrl = require("./controllers/payment.controller");
 const serviceCtrl = require("./controllers/service.controller");
 const contactCtrl = require("./controllers/contact.controller");
 
@@ -78,7 +79,14 @@ app.use("/api/rate", rateRouter);
 const bookingRouter = express.Router();
 bookingRouter.use(cookieJwtAuth, limite);
 bookingRouter.post("/create", bookingCtrl.crearReserva);
+bookingRouter.get("/me", bookingCtrl.obtenerHistorialReservasUsuario);
 app.use("/api/booking", bookingRouter);
+
+// --- Pagos ---
+const paymentRouter = express.Router();
+paymentRouter.use(cookieJwtAuth, limite);
+paymentRouter.post("/validate", paymentCtrl.validarPago);
+app.use("/api/payment", paymentRouter);
 
 // --- Servicios ---
 const serviceRouter = express.Router();

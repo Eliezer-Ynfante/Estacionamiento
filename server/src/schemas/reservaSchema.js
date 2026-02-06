@@ -15,16 +15,23 @@ exports.crearReservaSchema = z.object({
     .number()
     .int()
     .positive('El servicio_id debe ser un número positivo')
-    .optional()
-    .nullable(),
+    .nullish(),
 
   fecha_hora_inicio: z
     .string()
-    .datetime('La fecha_hora_inicio debe ser un datetime válido'),
+    .datetime({ offset: true })
+    .or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)),
 
   fecha_hora_fin: z
     .string()
-    .datetime('La fecha_hora_fin debe ser un datetime válido')
+    .datetime({ offset: true })
+    .or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/)),
+
+  paymentToken: z
+    .string()
+    .min(5, 'El paymentToken es requerido')
+    .optional()
+    .nullable()
 }).refine((data) => {
   const inicio = new Date(data.fecha_hora_inicio);
   const fin = new Date(data.fecha_hora_fin);

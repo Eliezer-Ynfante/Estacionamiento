@@ -42,8 +42,8 @@ module.exports = (sequelize) => {
       allowNull: true
     },
     estado: {
-      type: DataTypes.ENUM('pendiente', 'activa', 'completada'),
-      defaultValue: 'pendiente'
+      type: DataTypes.ENUM('pendiente_pago', 'confirmada', 'activa', 'completada', 'cancelada'),
+      defaultValue: 'pendiente_pago'
     }
   }, {
     tableName: 'Reserva',
